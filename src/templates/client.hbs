@@ -4,19 +4,19 @@
 import { NgModule} from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AngularHttpRequest } from './core/AngularHttpRequest';
-import { BaseHttpRequest } from './core/BaseHttpRequest';
-import type { OpenAPIConfig } from './core/OpenAPI';
-import { OpenAPI } from './core/OpenAPI';
+{{{ generateImport name 'core.AngularHttpRequest.AngularHttpRequest' }}}
+{{{ generateImport name 'core.BaseHttpRequest.BaseHttpRequest' }}}
+{{{ generateImportType name 'core.OpenAPI.OpenAPIConfig' }}}
+{{{ generateImport name 'core.OpenAPI.OpenAPI' }}}
 {{else}}
-import type { BaseHttpRequest } from './core/BaseHttpRequest';
-import type { OpenAPIConfig } from './core/OpenAPI';
-import { {{{httpRequest}}} } from './core/{{{httpRequest}}}';
+{{{ generateImport name 'core.BaseHttpRequest.BaseHttpRequest' }}}
+{{{ generateImportType name 'core.OpenAPI.OpenAPIConfig' }}}
+{{{ generateImport name (concat 'core.' httpRequest '.' httpRequest) }}}
 {{/equals}}
 
 {{#if services}}
 {{#each services}}
-import { {{{name}}}{{{@root.postfix}}} } from './services/{{{name}}}{{{@root.postfix}}}';
+{{{ generateImport ../name name }}}
 {{/each}}
 {{/if}}
 
@@ -43,18 +43,18 @@ import { {{{name}}}{{{@root.postfix}}} } from './services/{{{name}}}{{{@root.pos
 			useClass: AngularHttpRequest,
 		},
 		{{#each services}}
-		{{{name}}}{{{@root.postfix}}},
+		{{{getModuleType name}}},
 		{{/each}}
 	]
 })
-export class {{{clientName}}} {}
+export class {{{getModuleType name}}} {}
 {{else}}
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
-export class {{{clientName}}} {
+export class {{{getModuleType name}}} {
 
 	{{#each services}}
-	public readonly {{{camelCase name}}}: {{{name}}}{{{@root.postfix}}};
+	public readonly {{{getModuleType name}}}: {{{getModuleType name}}};
 	{{/each}}
 
 	public readonly request: BaseHttpRequest;
@@ -73,7 +73,7 @@ export class {{{clientName}}} {
 		});
 
 		{{#each services}}
-		this.{{{camelCase name}}} = new {{{name}}}{{{@root.postfix}}}(this.request);
+		this.{{{getModuleType name}}} = new {{{getModuleType name}}}(this.request);
 		{{/each}}
 	}
 }

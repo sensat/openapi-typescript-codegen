@@ -14,6 +14,7 @@ describe('writeClientIndex', () => {
             version: '1.0',
             models: [],
             services: [],
+            schemas: [],
         };
 
         const templates: Templates = {
@@ -36,7 +37,21 @@ describe('writeClientIndex', () => {
             },
         };
 
-        await writeClientIndex(client, templates, '/', true, true, true, true, true, 'Service', '');
+        await writeClientIndex(
+            client,
+            'index.index',
+            templates,
+            '/',
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            'Service',
+            '',
+            'Client.Client'
+        );
 
         expect(writeFile).toBeCalledWith(resolve('/', '/index.ts'), 'index');
     });

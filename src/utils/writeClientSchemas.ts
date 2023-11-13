@@ -1,11 +1,12 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 
 import type { Model } from '../client/interfaces/Model';
 import type { HttpClient } from '../HttpClient';
 import type { Indent } from '../Indent';
-import { writeFile } from './fileSystem';
+import { mkdir, writeFile } from './fileSystem';
 import { formatCode as f } from './formatCode';
 import { formatIndentation as i } from './formatIndentation';
+import { getModulePath } from './getModulePath';
 import type { Templates } from './registerHandlebarTemplates';
 
 /**
@@ -18,17 +19,19 @@ import type { Templates } from './registerHandlebarTemplates';
  * @param indent Indentation options (4, 2 or tab)
  */
 export const writeClientSchemas = async (
-    models: Model[],
+    schemas: Model[],
     templates: Templates,
     outputPath: string,
     httpClient: HttpClient,
     useUnionTypes: boolean,
     indent: Indent
 ): Promise<void> => {
-    for (const model of models) {
-        const file = resolve(outputPath, `$${model.name}.ts`);
+    for (const schema of schemas) {
+        const file = resolve(outputPath, `${getModulePath(schema.name)}.ts`);
+        await mkdir(dirname(file));
+
         const templateResult = templates.exports.schema({
-            ...model,
+            ...schema,
             httpClient,
             useUnionTypes,
         });

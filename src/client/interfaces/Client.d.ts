@@ -6,4 +6,5 @@ export interface Client {
     server: string;
     models: Model[];
     services: Service[];
+    schemas: Model[];
 }

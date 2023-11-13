@@ -16,5 +16,5 @@ export const parse = (openApi: OpenApi): Client => {
     const models = getModels(openApi);
     const services = getServices(openApi);
 
-    return { version, server, models, services };
+    return { version, server, models, services, schemas: [...models] };
 };

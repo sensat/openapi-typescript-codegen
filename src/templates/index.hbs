@@ -1,47 +1,47 @@
 {{>header}}
 
 {{#if @root.exportClient}}
-export { {{{clientName}}} } from './{{{clientName}}}';
-
+{{{ generateExport name clientName }}}
 {{/if}}
 {{#if @root.exportCore}}
-export { ApiError } from './core/ApiError';
+{{{ generateExport name 'core.ApiError.ApiError' }}}
 {{#if @root.exportClient}}
-export { BaseHttpRequest } from './core/BaseHttpRequest';
+{{{ generateExport name 'core.BaseHttpRequest.BaseHttpRequest' }}}
 {{/if}}
-export { CancelablePromise, CancelError } from './core/CancelablePromise';
-export { OpenAPI } from './core/OpenAPI';
-export type { OpenAPIConfig } from './core/OpenAPI';
+{{{ generateExport name 'core.CancelablePromise.CancelablePromise' }}}
+{{{ generateExport name 'core.CancelablePromise.CancelError' }}}
+{{{ generateExport name 'core.OpenAPI.OpenAPI' }}}
+{{{ generateExportType name 'core.OpenAPI.OpenAPIConfig' }}}
 {{/if}}
 {{#if @root.exportModels}}
 {{#if models}}
 
 {{#each models}}
 {{#if @root.useUnionTypes}}
-export type { {{{name}}}{{#if @root.postfixModels}} as {{{name}}}{{{@root.postfixModels}}}{{/if}} } from './models/{{{name}}}';
+{{{ generateExportType ../name name }}}
 {{else if enum}}
-export { {{{name}}}{{#if @root.postfixModels}} as {{{name}}}{{{@root.postfixModels}}}{{/if}} } from './models/{{{name}}}';
+{{{ generateExport ../name name }}}
 {{else if enums}}
-export { {{{name}}}{{#if @root.postfixModels}} as {{{name}}}{{{@root.postfixModels}}}{{/if}} } from './models/{{{name}}}';
+{{{ generateExport ../name name }}}
 {{else}}
-export type { {{{name}}}{{#if @root.postfixModels}} as {{{name}}}{{{@root.postfixModels}}}{{/if}} } from './models/{{{name}}}';
+{{{ generateExportType ../name name }}}
 {{/if}}
 {{/each}}
 {{/if}}
 {{/if}}
-{{#if @root.exportSchemas}}
-{{#if models}}
 
-{{#each models}}
-export { ${{{name}}} } from './schemas/${{{name}}}';
+{{#if @root.exportSchemas}}
+{{#if schemas}}
+{{#each schemas}}
+{{{ generateExport ../name name }}}
 {{/each}}
 {{/if}}
 {{/if}}
 {{#if @root.exportServices}}
-{{#if services}}
 
+{{#if services}}
 {{#each services}}
-export { {{{name}}}{{{@root.postfixServices}}} } from './services/{{{name}}}{{{@root.postfixServices}}}';
+{{{ generateExport ../name name }}}
 {{/each}}
 {{/if}}
 {{/if}}

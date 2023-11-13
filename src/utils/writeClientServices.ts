@@ -1,11 +1,12 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 
 import type { Service } from '../client/interfaces/Service';
 import type { HttpClient } from '../HttpClient';
 import type { Indent } from '../Indent';
-import { writeFile } from './fileSystem';
+import { mkdir, writeFile } from './fileSystem';
 import { formatCode as f } from './formatCode';
 import { formatIndentation as i } from './formatIndentation';
+import { getModulePath } from './getModulePath';
 import { isDefined } from './isDefined';
 import type { Templates } from './registerHandlebarTemplates';
 
@@ -29,17 +30,17 @@ export const writeClientServices = async (
     useUnionTypes: boolean,
     useOptions: boolean,
     indent: Indent,
-    postfix: string,
     clientName?: string
 ): Promise<void> => {
     for (const service of services) {
-        const file = resolve(outputPath, `${service.name}${postfix}.ts`);
+        const file = resolve(outputPath, `${getModulePath(service.name)}.ts`);
+        await mkdir(dirname(file));
+
         const templateResult = templates.exports.service({
             ...service,
             httpClient,
             useUnionTypes,
             useOptions,
-            postfix,
             exportClient: isDefined(clientName),
         });
         await writeFile(file, i(f(templateResult), indent));

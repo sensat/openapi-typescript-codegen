@@ -13,22 +13,22 @@ import type { Observable } from 'rxjs';
 {{/equals}}
 {{#if imports}}
 {{#each imports}}
-import type { {{{this}}} } from '../models/{{{this}}}';
+{{{ generateImportType ../name this }}}
 {{/each}}
 
 {{/if}}
 {{#notEquals @root.httpClient 'angular'}}
-import type { CancelablePromise } from '../core/CancelablePromise';
+{{{ generateImportType name 'core.CancelablePromise.CancelablePromise' }}}
 {{/notEquals}}
 {{#if @root.exportClient}}
 {{#equals @root.httpClient 'angular'}}
-import { BaseHttpRequest } from '../core/BaseHttpRequest';
+{{{ generateImport name 'core.BaseHttpRequest.BaseHttpRequest' }}}
 {{else}}
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+{{{ generateImportType name 'core.BaseHttpRequest.BaseHttpRequest' }}}
 {{/equals}}
 {{else}}
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+{{{ generateImport name 'core.OpenAPI.OpenAPI' }}}
+{{{ generateImport name 'core.request.request' '__request' }}}
 {{/if}}
 
 {{#equals @root.httpClient 'angular'}}
@@ -36,7 +36,7 @@ import { request as __request } from '../core/request';
   providedIn: 'root',
 })
 {{/equals}}
-export class {{{name}}}{{{@root.postfix}}} {
+export class {{{getModuleType name}}} {
 	{{#if @root.exportClient}}
 
 	constructor(public readonly httpRequest: BaseHttpRequest) {}

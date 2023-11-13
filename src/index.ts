@@ -15,10 +15,15 @@ export { Indent } from './Indent';
 export type Options = {
     input: string | Record<string, any>;
     output: string;
+    serviceOutput?: string;
+    modelOutput?: string;
+    schemaOutput?: string;
     httpClient?: HttpClient;
     clientName?: string;
     useOptions?: boolean;
     useUnionTypes?: boolean;
+    fullyQualifiedNames?: boolean;
+    exportPackages?: boolean;
     exportCore?: boolean;
     exportServices?: boolean;
     exportModels?: boolean;
@@ -53,6 +58,10 @@ export type Options = {
 export const generate = async ({
     input,
     output,
+    serviceOutput = 'services',
+    modelOutput = 'models',
+    schemaOutput = 'schemas',
+    fullyQualifiedNames = false,
     httpClient = HttpClient.FETCH,
     clientName,
     useOptions = false,
@@ -61,12 +70,17 @@ export const generate = async ({
     exportServices = true,
     exportModels = true,
     exportSchemas = false,
+    exportPackages = false,
     indent = Indent.SPACE_4,
     postfixServices = 'Service',
     postfixModels = '',
     request,
     write = true,
 }: Options): Promise<void> => {
+    const servicePkg = serviceOutput.split('/').join('.');
+    const modelPkg = modelOutput.split('/').join('.');
+    const schemaPkg = schemaOutput.split('/').join('.');
+
     const openApi = isString(input) ? await getOpenApiSpec(input) : input;
     const openApiVersion = getOpenApiVersion(openApi);
     const templates = registerHandlebarTemplates({
@@ -78,7 +92,14 @@ export const generate = async ({
     switch (openApiVersion) {
         case OpenApiVersion.V2: {
             const client = parseV2(openApi);
-            const clientFinal = postProcessClient(client);
+            const clientFinal = postProcessClient(
+                client,
+                servicePkg,
+                postfixServices,
+                modelPkg,
+                schemaPkg,
+                fullyQualifiedNames
+            );
             if (!write) break;
             await writeClient(
                 clientFinal,
@@ -91,6 +112,7 @@ export const generate = async ({
                 exportServices,
                 exportModels,
                 exportSchemas,
+                exportPackages,
                 indent,
                 postfixServices,
                 postfixModels,
@@ -102,7 +124,14 @@ export const generate = async ({
 
         case OpenApiVersion.V3: {
             const client = parseV3(openApi);
-            const clientFinal = postProcessClient(client);
+            const clientFinal = postProcessClient(
+                client,
+                servicePkg,
+                postfixServices,
+                modelPkg,
+                schemaPkg,
+                fullyQualifiedNames
+            );
             if (!write) break;
             await writeClient(
                 clientFinal,
@@ -115,6 +144,7 @@ export const generate = async ({
                 exportServices,
                 exportModels,
                 exportSchemas,
+                exportPackages,
                 indent,
                 postfixServices,
                 postfixModels,

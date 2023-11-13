@@ -14,6 +14,7 @@ describe('writeClientClass', () => {
             version: 'v1',
             models: [],
             services: [],
+            schemas: [],
         };
 
         const templates: Templates = {
@@ -36,7 +37,7 @@ describe('writeClientClass', () => {
             },
         };
 
-        await writeClientClass(client, templates, './dist', HttpClient.FETCH, 'AppClient', Indent.SPACE_4, '');
+        await writeClientClass(client, templates, './dist', HttpClient.FETCH, 'AppClient', Indent.SPACE_4);
 
         expect(writeFile).toBeCalled();
     });

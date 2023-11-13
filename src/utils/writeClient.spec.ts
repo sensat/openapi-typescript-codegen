@@ -14,6 +14,7 @@ describe('writeClient', () => {
             version: 'v1',
             models: [],
             services: [],
+            schemas: [],
         };
 
         const templates: Templates = {
@@ -47,6 +48,7 @@ describe('writeClient', () => {
             true,
             true,
             true,
+            false,
             Indent.SPACE_4,
             'Service',
             'AppClient'

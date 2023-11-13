@@ -8,7 +8,7 @@
 {{/if}}
  */
 {{/ifdef}}
-export type {{{name}}} = {
+export type {{{getModuleType name}}} = {
 	{{#each properties}}
 	{{#ifdef description deprecated}}
 	/**
@@ -26,7 +26,7 @@ export type {{{name}}} = {
 {{#if enums}}
 {{#unless @root.useUnionTypes}}
 
-export namespace {{{name}}} {
+export namespace {{{getModuleType name}}} {
 
 	{{#each enums}}
 	{{#if description}}

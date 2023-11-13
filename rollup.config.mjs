@@ -39,6 +39,13 @@ const handlebarsPlugin = () => ({
                     escapeComment: true,
                     escapeDescription: true,
                     camelCase: true,
+                    getModuleType: true,
+                    generateImportType: true,
+                    generateImport: true,
+                    generateExportType: true,
+                    generateExport: true,
+                    generateSchemaExport: true,
+                    concat: true,
                 },
             });
             return `export default ${templateSpec};`;

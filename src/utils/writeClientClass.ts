@@ -1,12 +1,13 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 
 import type { Client } from '../client/interfaces/Client';
 import type { HttpClient } from '../HttpClient';
 import type { Indent } from '../Indent';
-import { writeFile } from './fileSystem';
+import { mkdir, writeFile } from './fileSystem';
 import { formatCode as f } from './formatCode';
 import { formatIndentation as i } from './formatIndentation';
 import { getHttpRequestName } from './getHttpRequestName';
+import { getModulePath } from './getModulePath';
 import type { Templates } from './registerHandlebarTemplates';
 import { sortModelsByName } from './sortModelsByName';
 import { sortServicesByName } from './sortServicesByName';
@@ -28,14 +29,15 @@ export const writeClientClass = async (
     templates: Templates,
     outputPath: string,
     httpClient: HttpClient,
-    clientName: string,
-    indent: Indent,
-    postfix: string
+    name: string,
+    indent: Indent
 ): Promise<void> => {
+    const file = resolve(outputPath, `${getModulePath(name)}.ts`);
+    await mkdir(dirname(file));
+
     const templateResult = templates.client({
-        clientName,
+        name,
         httpClient,
-        postfix,
         server: client.server,
         version: client.version,
         models: sortModelsByName(client.models),
@@ -43,5 +45,5 @@ export const writeClientClass = async (
         httpRequest: getHttpRequestName(httpClient),
     });
 
-    await writeFile(resolve(outputPath, `${clientName}.ts`), i(f(templateResult), indent));
+    await writeFile(file, i(f(templateResult), indent));
 };

@@ -1,8 +1,8 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 
 import type { Client } from '../client/interfaces/Client';
-import { writeFile } from './fileSystem';
-import { isDefined } from './isDefined';
+import { mkdir, writeFile } from './fileSystem';
+import { getModulePath } from './getModulePath';
 import { Templates } from './registerHandlebarTemplates';
 import { sortModelsByName } from './sortModelsByName';
 import { sortServicesByName } from './sortServicesByName';
@@ -25,6 +25,7 @@ import { sortServicesByName } from './sortServicesByName';
  */
 export const writeClientIndex = async (
     client: Client,
+    name: string,
     templates: Templates,
     outputPath: string,
     useUnionTypes: boolean,
@@ -32,15 +33,21 @@ export const writeClientIndex = async (
     exportServices: boolean,
     exportModels: boolean,
     exportSchemas: boolean,
+    exportClient: boolean,
     postfixServices: string,
     postfixModels: string,
     clientName?: string
 ): Promise<void> => {
+    const file = resolve(outputPath, `${getModulePath(name)}.ts`);
+    await mkdir(dirname(file));
+
     const templateResult = templates.index({
+        name,
         exportCore,
         exportServices,
         exportModels,
         exportSchemas,
+        exportClient,
         useUnionTypes,
         postfixServices,
         postfixModels,
@@ -49,8 +56,8 @@ export const writeClientIndex = async (
         version: client.version,
         models: sortModelsByName(client.models),
         services: sortServicesByName(client.services),
-        exportClient: isDefined(clientName),
+        schemas: sortModelsByName(client.schemas),
     });
 
-    await writeFile(resolve(outputPath, 'index.ts'), templateResult);
+    await writeFile(file, templateResult);
 };

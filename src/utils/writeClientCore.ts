@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import type { Client } from '../client/interfaces/Client';
 import type { HttpClient } from '../HttpClient';
 import type { Indent } from '../Indent';
-import { copyFile, exists, writeFile } from './fileSystem';
+import { copyFile, exists, mkdir, writeFile } from './fileSystem';
 import { formatIndentation as i } from './formatIndentation';
 import { getHttpRequestName } from './getHttpRequestName';
 import { isDefined } from './isDefined';
@@ -28,6 +28,8 @@ export const writeClientCore = async (
     clientName?: string,
     request?: string
 ): Promise<void> => {
+    await mkdir(outputPath);
+
     const httpRequest = getHttpRequestName(httpClient);
     const context = {
         httpClient,

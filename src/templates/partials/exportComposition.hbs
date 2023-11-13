@@ -8,11 +8,11 @@
 {{/if}}
  */
 {{/ifdef}}
-export type {{{name}}} = {{>type parent=name}};
+export type {{{getModuleType name}}} = {{>type parent=name}};
 {{#if enums}}
 {{#unless @root.useUnionTypes}}
 
-export namespace {{{name}}} {
+export namespace {{{getModuleType name}}} {
 
 	{{#each enums}}
 	{{#ifdef description deprecated}}
@@ -25,7 +25,7 @@ export namespace {{{name}}} {
 	{{/if}}
 	 */
 	{{/ifdef}}
-	export enum {{{name}}} {
+	export enum {{{getModuleType name}}} {
 		{{#each enum}}
 		{{{name}}} = {{{value}}},
 		{{/each}}

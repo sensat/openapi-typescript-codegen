@@ -3,7 +3,7 @@ import { getMappedType } from './getMappedType';
 import { stripNamespace } from './stripNamespace';
 
 const encode = (value: string): string => {
-    return value.replace(/^[^a-zA-Z_$]+/g, '').replace(/[^\w$]+/g, '_');
+    return value.replace(/^[^a-zA-Z_$\.]+/g, '').replace(/[^\w$]+/g, '_');
 };
 
 /**

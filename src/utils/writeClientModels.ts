@@ -1,11 +1,12 @@
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 
 import type { Model } from '../client/interfaces/Model';
 import type { HttpClient } from '../HttpClient';
 import type { Indent } from '../Indent';
-import { writeFile } from './fileSystem';
+import { mkdir, writeFile } from './fileSystem';
 import { formatCode as f } from './formatCode';
 import { formatIndentation as i } from './formatIndentation';
+import { getModulePath } from './getModulePath';
 import type { Templates } from './registerHandlebarTemplates';
 
 /**
@@ -26,7 +27,9 @@ export const writeClientModels = async (
     indent: Indent
 ): Promise<void> => {
     for (const model of models) {
-        const file = resolve(outputPath, `${model.name}.ts`);
+        const file = resolve(outputPath, `${getModulePath(model.name)}.ts`);
+        await mkdir(dirname(file));
+
         const templateResult = templates.exports.model({
             ...model,
             httpClient,

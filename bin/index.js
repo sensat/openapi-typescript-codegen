@@ -16,10 +16,22 @@ const params = program
     .option('--name <value>', 'Custom client class name')
     .option('--useOptions', 'Use options instead of arguments')
     .option('--useUnionTypes', 'Use union types instead of enums')
+    .option(
+        '--fullyQualifiedNames',
+        'If set, names in the spec will treated as fully qualified (full.package.to.service). Recommended to use with --exportPackages'
+    )
+    .option(
+        '--exportPackages <value>',
+        'If set, packages will be generated from services and models. Recommended to use with --fullyQualifiedNames',
+        false
+    )
     .option('--exportCore <value>', 'Write core files to disk', true)
     .option('--exportServices <value>', 'Write services to disk', true)
     .option('--exportModels <value>', 'Write models to disk', true)
     .option('--exportSchemas <value>', 'Write schemas to disk', false)
+    .option('--serviceOutput <value>', 'Path to write services', 'services')
+    .option('--modelOutput <value>', 'Path to write models', 'models')
+    .option('--schemaOutput <value>', 'Path to write schemas', 'schemas')
     .option('--indent <value>', 'Indentation options [4, 2, tabs]', '4')
     .option('--postfixServices <value>', 'Service name postfix', 'Service')
     .option('--postfixModels <value>', 'Model name postfix')
@@ -37,6 +49,11 @@ if (OpenAPI) {
         clientName: params.name,
         useOptions: params.useOptions,
         useUnionTypes: params.useUnionTypes,
+        serviceOutput: params.serviceOutput,
+        modelOutput: params.modelOutput,
+        schemaOutput: params.schemaOutput,
+        fullyQualifiedNames: params.fullyQualifiedNames,
+        exportPackages: JSON.parse(params.exportPackages) === true,
         exportCore: JSON.parse(params.exportCore) === true,
         exportServices: JSON.parse(params.exportServices) === true,
         exportModels: JSON.parse(params.exportModels) === true,

@@ -17,6 +17,7 @@ describe('writeClientCore', () => {
             version: '1.0',
             models: [],
             services: [],
+            schemas: [],
         };
 
         const templates: Templates = {
